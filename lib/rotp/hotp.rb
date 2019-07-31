@@ -30,6 +30,7 @@ module ROTP
         counter: initial_count,
         digits: digits == DEFAULT_DIGITS ? nil : digits
       }
+      params.merge!(@provisioning_params)
       encode_params("otpauth://hotp/#{Addressable::URI.escape(name)}", params)
     end
   end

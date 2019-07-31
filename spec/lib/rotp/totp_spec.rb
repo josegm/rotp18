@@ -295,6 +295,18 @@ RSpec.describe ROTP::TOTP do
         expect(params['algorithm'].first).to eq 'SHA256'
       end
     end
+
+    context 'with non-standard provisioning_params' do
+      let(:totp)  { ROTP::TOTP.new 'JBSWY3DPEHPK3PXP', issuer: 'FooCo', provisioning_params: {image: "https://example.com/icon.png"} }
+
+      it 'has the correct format' do
+        expect(uri).to match %r{\Aotpauth:\/\/totp/FooCo:.+}
+      end
+
+      it 'includes the issuer as parameter' do
+        expect(params['image'].first).to eq 'https://example.com/icon.png'
+      end
+    end
   end
 
   describe '#now' do

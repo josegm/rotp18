@@ -66,6 +66,7 @@ module ROTP
         digits: digits == DEFAULT_DIGITS ? nil : digits,
         algorithm: digest.casecmp('SHA1').zero? ? nil : digest.upcase
       }
+      params.merge!(@provisioning_params)
       encode_params("otpauth://totp/#{issuer_string}#{Addressable::URI.escape(name)}", params)
     end
 
