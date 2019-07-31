@@ -221,7 +221,7 @@ RSpec.describe ROTP::TOTP do
   end
 
   describe '#provisioning_uri' do
-    let(:uri)    { totp.provisioning_uri('mark@percival') }
+    let(:uri)    { totp.provisioning_uri() }
     let(:params) { CGI.parse URI.parse(uri).query }
 
     context 'without issuer' do
@@ -261,6 +261,32 @@ RSpec.describe ROTP::TOTP do
 
       it 'includes the issuer as parameter' do
         expect(params['issuer'].first).to eq 'FooCo'
+      end
+    end
+
+    context 'with name' do
+      let(:totp)  { ROTP::TOTP.new 'JBSWY3DPEHPK3PXP', issuer: 'FooCo', name: 'mark@percival' }
+
+      it 'has the correct format' do
+        expect(uri).to match %r{\Aotpauth:\/\/totp/FooCo:mark@percival.+}
+      end
+
+      it 'includes the secret as parameter' do
+        expect(params['secret'].first).to eq 'JBSWY3DPEHPK3PXP'
+      end
+
+      it 'includes the issuer as parameter' do
+        expect(params['issuer'].first).to eq 'FooCo'
+      end
+    end
+
+    # For backwards compatibility, let people pass through a name to the provisioning_uri method
+    context 'legacy passing name through' do
+      let(:totp)  { ROTP::TOTP.new 'JBSWY3DPEHPK3PXP', issuer: 'FooCo'}
+      let(:uri)    { totp.provisioning_uri('alice@google.com') }
+
+      it 'has the correct format' do
+        expect(uri).to match %r{\Aotpauth:\/\/totp/FooCo:alice@google.com.+}
       end
     end
 

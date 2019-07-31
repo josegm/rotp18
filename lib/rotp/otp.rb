@@ -1,6 +1,6 @@
 module ROTP
   class OTP
-    attr_reader :secret, :digits, :digest, :provisioning_params
+    attr_reader :secret, :digits, :digest, :name, :issuer, :provisioning_params
     DEFAULT_DIGITS = 6
 
     # @param [String] secret in the form of base32
@@ -17,6 +17,8 @@ module ROTP
     def initialize(s, options = {})
       @digits = options[:digits] || DEFAULT_DIGITS
       @digest = options[:digest] || 'sha1'
+      @name = options[:name]
+      @issuer = options[:issuer]
       @provisioning_params = options[:provisioning_params] || {}
       @secret = s
     end
@@ -78,6 +80,16 @@ module ROTP
       end
       params_str.chop!
       uri + params_str
+    end
+
+    def default_provisioning_params
+      params = {
+        secret: secret,
+        issuer: issuer,
+        digits: digits == DEFAULT_DIGITS ? nil : digits,
+        algorithm: digest.casecmp('SHA1').zero? ? nil : digest.upcase
+      }
+      return params
     end
 
     # constant-time compare the strings
