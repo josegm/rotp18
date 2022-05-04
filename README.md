@@ -1,3 +1,7 @@
+## Fork
+
+This is a fork of  https://github.com/mdp/rotp It adds small changes to make it compatible for Ruby 1.8.7.
+
 ## Webauthn and the future of 2FA
 
 Although this library will continue to be maintained, if you're implementing a 2FA solution today, you should take a look at [Webauthn](https://webauthn.guide/). It doesn't involve shared secrets and it's supported by most modern browsers and operating systems.

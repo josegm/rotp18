@@ -11,7 +11,7 @@ module ROTP
     # @param otp [String/Integer] the OTP to check against
     # @param counter [Integer] the counter of the OTP
     # @param retries [Integer] number of counters to incrementally retry
-    def verify(otp, counter, retries: 0)
+    def verify(otp, counter, retries = 0)
       counters = (counter..counter + retries).to_a
       counters.find do |c|
         super(otp, at(c))
@@ -25,7 +25,7 @@ module ROTP
     # @param [Integer] initial_count starting counter value, defaults to 0
     # @return [String] provisioning uri
     def provisioning_uri(name, initial_count = 0)
-      OTP::URI.new(self, account_name: name, counter: initial_count).to_s
+      OTP::URI.new(self, name, initial_count).to_s
     end
   end
 end

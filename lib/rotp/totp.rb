@@ -36,7 +36,7 @@ module ROTP
     #   otp. default Time.now
     # @return [Integer, nil] the last successful timestamp
     #   interval
-    def verify(otp, drift_ahead: 0, drift_behind: 0, after: nil, at: Time.now)
+    def verify(otp, drift_ahead = 0, drift_behind = 0, after = nil, at = Time.now)
       timecodes = get_timecodes(at, drift_behind, drift_ahead)
 
       timecodes = timecodes.select { |t| t > timecode(after) } if after
@@ -54,7 +54,7 @@ module ROTP
     # @param [String] name of the account
     # @return [String] provisioning URI
     def provisioning_uri(name)
-      OTP::URI.new(self, account_name: name).to_s
+      OTP::URI.new(self, name).to_s
     end
 
     private

@@ -2,7 +2,7 @@ module ROTP
   class OTP
     # https://github.com/google/google-authenticator/wiki/Key-Uri-Format
     class URI
-      def initialize(otp, account_name:, counter: nil)
+      def initialize(otp, account_name, counter = nil)
         @otp = otp
         @account_name = account_name
         @counter = counter
@@ -36,29 +36,29 @@ module ROTP
       def issuer
         return if @otp.is_a?(HOTP)
 
-        @otp.issuer&.strip&.tr(':', '_')
+        @otp.issuer.try(:strip).try(:tr, ':', '_')
       end
 
       def label
-        [issuer, @account_name.rstrip]
-          .compact
-          .map { |s| s.tr(':', '_') }
-          .map { |s| ERB::Util.url_encode(s) }
-          .join(':')
+        [issuer, @account_name.rstrip].
+          compact.
+          map { |s| s.tr(':', '_') }.
+          map { |s| ERB::Util.url_encode(s) }.
+          join(':')
       end
 
       def parameters
         {
-          secret: @otp.secret,
-          issuer: issuer,
-          algorithm: algorithm,
-          digits: digits,
-          period: period,
-          counter: counter,
-        }
-          .reject { |_, v| v.nil? }
-          .map { |k, v| "#{k}=#{ERB::Util.url_encode(v)}" }
-          .join('&')
+          :secret => @otp.secret,
+          :issuer => issuer,
+          :algorithm => algorithm,
+          :digits => digits,
+          :period => period,
+          :counter => counter,
+        }.
+        reject { |_, v| v.nil? }.
+        map { |k, v| "#{k}=#{ERB::Util.url_encode(v)}" }.
+        join('&')
       end
 
       def period
